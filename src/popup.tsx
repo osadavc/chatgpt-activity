@@ -13,22 +13,78 @@ const getColorIntensity = (count: number) => {
   return "#216e39";
 };
 
-const ContributionSquare = ({ count = 0, date }) => (
-  <div
-    style={{
-      width: 10,
-      height: 10,
-      backgroundColor: getColorIntensity(count),
-      margin: 1,
-      borderRadius: 2
-    }}
-    title={`${date}: ${count} chats`}
-  />
-);
+const ContributionSquare = ({ count = 0, date }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [tooltipPosition, setTooltipPosition] = useState({
+    vertical: "bottom",
+    horizontal: "center"
+  });
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const vertical = rect.top < 40 ? "top" : "bottom";
+    const horizontal =
+      rect.left < 70
+        ? "right"
+        : rect.right > window.innerWidth - 70
+          ? "left"
+          : "center";
+    setTooltipPosition({ vertical, horizontal });
+    setShowTooltip(true);
+  };
+
+  const getHorizontalTransform = () => {
+    switch (tooltipPosition.horizontal) {
+      case "left":
+        return "translateX(-90%)";
+      case "right":
+        return "translateX(-10%)";
+      default:
+        return "translateX(-50%)";
+    }
+  };
+
+  return (
+    <div
+      style={{
+        width: 10,
+        height: 10,
+        backgroundColor: getColorIntensity(count),
+        margin: 1,
+        borderRadius: 2,
+        position: "relative"
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={() => setShowTooltip(false)}>
+      {showTooltip && (
+        <div
+          style={{
+            position: "absolute",
+            ...(tooltipPosition.vertical === "bottom"
+              ? { bottom: "100%", top: "auto" }
+              : { top: "100%", bottom: "auto" }),
+            left: "50%",
+            transform: getHorizontalTransform(),
+            backgroundColor: "#333",
+            color: "white",
+            padding: "4px 8px",
+            borderRadius: "4px",
+            fontSize: "12px",
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+            zIndex: 1000,
+            marginTop: tooltipPosition.vertical === "top" ? "4px" : "auto",
+            marginBottom: tooltipPosition.vertical === "bottom" ? "4px" : "auto"
+          }}>
+          {`${date}: ${count} chats`}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const IndexPopup = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [data, setData] = useState("");
   const [chatsByDate] = useStorage<Record<string, number>>({
     key: keys.chatsByDate,
     instance: new Storage({
@@ -111,7 +167,11 @@ const IndexPopup = () => {
     });
 
     return (
-      <div style={{ padding: "10px 0", width: "650px" }}>
+      <div style={{ width: "650px" }}>
+        <div>
+          <h2>ChatGPT Activity</h2>
+        </div>
+
         {renderYearSelector()}
         <div
           style={{
@@ -126,7 +186,11 @@ const IndexPopup = () => {
     );
   };
 
-  return <div style={{ padding: 16 }}>{renderContributionGraph()}</div>;
+  return (
+    <div style={{ padding: 16, paddingTop: 5 }}>
+      {renderContributionGraph()}
+    </div>
+  );
 };
 
 export default IndexPopup;
