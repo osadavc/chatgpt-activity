@@ -1,3 +1,4 @@
+import html2canvas from "html2canvas";
 import { useEffect, useState } from "react";
 
 import { Storage } from "@plasmohq/storage";
@@ -101,6 +102,21 @@ const IndexPopup = () => {
     ].sort((a, b) => b - a); // Sort descending
   };
 
+  const handleDownload = async () => {
+    const graphElement = document.getElementById("contribution-graph");
+    if (!graphElement) return;
+
+    try {
+      const canvas = await html2canvas(graphElement);
+      const link = document.createElement("a");
+      link.download = `chatgpt-activity-${selectedYear}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } catch (error) {
+      console.error("Error generating image:", error);
+    }
+  };
+
   const renderYearSelector = () => (
     <div
       style={{
@@ -167,9 +183,35 @@ const IndexPopup = () => {
     });
 
     return (
-      <div style={{ width: "650px" }}>
-        <div>
+      <div style={{ width: "650px" }} id="contribution-graph">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
           <h2>ChatGPT Activity</h2>
+          <button
+            onClick={handleDownload}
+            style={{
+              padding: "6px 12px",
+              border: "none",
+              borderRadius: "6px",
+              backgroundColor: "#40c463",
+              color: "white",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: "500",
+              transition: "all 0.2s ease"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#30a14e";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#40c463";
+            }}>
+            Download Image
+          </button>
         </div>
 
         {renderYearSelector()}
