@@ -28,7 +28,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
               new Date(lastFetchTime).getTime() + 1000 * 60 * 60 * 24 * 30 <
                 new Date().getTime());
 
-          if (true) {
+          if (shouldFetchChats) {
             const baseUrl = details.url.split("?")[0];
             const authHeader = details.requestHeaders?.find(
               (header) => header.name.toLowerCase() === "authorization"
