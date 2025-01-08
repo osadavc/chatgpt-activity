@@ -171,7 +171,7 @@ const IndexPopup = () => {
 
   const renderContributionGraph = () => {
     const today = new Date();
-    const startDate = new Date(selectedYear, 0, 1); // January 1st of selected year
+    const startDate = new Date(selectedYear, 0, 1);
     const days = Array.from({ length: 365 }, (_, i) => {
       const date = new Date(startDate);
       date.setDate(date.getDate() + i);
@@ -181,6 +181,15 @@ const IndexPopup = () => {
         count: chatsByDate?.[dateStr] || 0
       };
     });
+
+    // Calculate grid dimensions
+    const ROWS = 7; // 7 days per column
+    const COLS = Math.ceil(365 / ROWS); // ~53 columns
+
+    // Reorganize days into columns
+    const columns = Array.from({ length: COLS }, (_, colIndex) =>
+      days.slice(colIndex * ROWS, (colIndex + 1) * ROWS)
+    );
 
     return (
       <div style={{ width: "650px" }} id="contribution-graph">
@@ -217,11 +226,19 @@ const IndexPopup = () => {
         {renderYearSelector()}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(53, 1fr)"
+            display: "flex"
           }}>
-          {days.map(({ date, count }) => (
-            <ContributionSquare key={date} date={date} count={count} />
+          {columns.map((column, colIndex) => (
+            <div
+              key={colIndex}
+              style={{
+                display: "flex",
+                flexDirection: "column"
+              }}>
+              {column.map(({ date, count }) => (
+                <ContributionSquare key={date} date={date} count={count} />
+              ))}
+            </div>
           ))}
         </div>
       </div>

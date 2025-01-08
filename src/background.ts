@@ -1,7 +1,7 @@
 import { Storage } from "@plasmohq/storage";
 
 import { keys } from "~config/constants";
-import { fetchChats } from "~lib/fetch_chats";
+import { fetchChats, type ChromeHeaders } from "~lib/fetch_chats";
 
 let isFirstRequest = true;
 
@@ -12,36 +12,39 @@ const storage = new Storage({
 chrome.webRequest.onBeforeSendHeaders.addListener(
   (details) => {
     (async () => {
-      if (
-        details.url.includes("/backend-api/conversations") &&
-        isFirstRequest
-      ) {
-        const chatsByDate = await storage.get(keys.chatsByDate);
-        const lastFetchTime = await storage.get(keys.lastFetchTime);
+      try {
+        if (
+          details.url.includes("/backend-api/conversations") &&
+          isFirstRequest
+        ) {
+          console.log("Fetching chats");
+          isFirstRequest = false;
+          const chatsByDate = await storage.get(keys.chatsByDate);
+          const lastFetchTime = await storage.get(keys.lastFetchTime);
 
-        console.log("Chats by Date:", chatsByDate);
+          const shouldFetchChats =
+            !chatsByDate ||
+            (lastFetchTime &&
+              new Date(lastFetchTime).getTime() + 1000 * 60 * 60 * 24 * 30 <
+                new Date().getTime());
 
-        const shouldFetchChats =
-          !chatsByDate ||
-          (lastFetchTime &&
-            new Date(lastFetchTime).getTime() + 1000 * 60 * 60 * 24 * 30 <
-              new Date().getTime());
+          if (true) {
+            const baseUrl = details.url.split("?")[0];
+            const authHeader = details.requestHeaders?.find(
+              (header) => header.name.toLowerCase() === "authorization"
+            );
 
-        if (true) {
-          const baseUrl = details.url.split("?")[0];
-          const authHeader = details.requestHeaders?.find(
-            (header) => header.name.toLowerCase() === "authorization"
-          );
-
-          if (authHeader?.value) {
-            await fetchChats({
-              baseUrl,
-              authHeader: authHeader.value
-            });
+            if (authHeader?.value) {
+              await fetchChats({
+                baseUrl,
+                headers: details.requestHeaders as ChromeHeaders
+              });
+            }
           }
         }
-
+      } catch (error) {
         isFirstRequest = false;
+        console.error("Error in chat fetch listener:", error);
       }
     })();
   },
