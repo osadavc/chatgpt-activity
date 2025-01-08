@@ -5,14 +5,12 @@ import { ContributionSquare } from "./contribution-square";
 interface ContributionGraphProps {
   selectedYear: number;
   chatsByDate: Record<string, number>;
-  onDownload: () => void;
   renderYearSelector: () => JSX.Element;
 }
 
 export const ContributionGraph = ({
   selectedYear,
   chatsByDate,
-  onDownload,
   renderYearSelector
 }: ContributionGraphProps) => {
   const startDate = new Date(selectedYear, 0, 1);
@@ -42,27 +40,6 @@ export const ContributionGraph = ({
           alignItems: "center"
         }}>
         <h2>ChatGPT Activity</h2>
-        <button
-          onClick={onDownload}
-          style={{
-            padding: "6px 12px",
-            border: "none",
-            borderRadius: "6px",
-            backgroundColor: "#40c463",
-            color: "white",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: "500",
-            transition: "all 0.2s ease"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#30a14e";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "#40c463";
-          }}>
-          Download Image
-        </button>
       </div>
 
       {renderYearSelector()}

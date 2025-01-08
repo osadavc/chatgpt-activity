@@ -6,15 +6,21 @@ import { useStorage } from "@plasmohq/storage/hook";
 import { ContributionGraph } from "~components/contribution-graph";
 import { YearSelector } from "~components/year-selector";
 import { keys } from "~config/constants";
-import { downloadGraphImage } from "~utils/download-image";
+
+import "./styles/popup.css";
+
+const localStorage = new Storage({ area: "local" });
 
 const IndexPopup = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
   const [chatsByDate] = useStorage<Record<string, number>>({
     key: keys.chatsByDate,
-    instance: new Storage({
-      area: "local"
-    })
+    instance: localStorage
+  });
+  const [fetchingChats] = useStorage({
+    key: keys.fetchingChats,
+    instance: localStorage
   });
 
   const getAvailableYears = () => {
@@ -42,18 +48,31 @@ const IndexPopup = () => {
 
   return (
     <div style={{ padding: 16, paddingTop: 5 }}>
-      <ContributionGraph
-        selectedYear={selectedYear}
-        chatsByDate={chatsByDate || {}}
-        onDownload={() => downloadGraphImage(selectedYear)}
-        renderYearSelector={() => (
-          <YearSelector
+      <div style={{ width: "650px" }}>
+        {fetchingChats ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: 200
+            }}>
+            <div className="loading-spinner" />
+          </div>
+        ) : (
+          <ContributionGraph
             selectedYear={selectedYear}
-            setSelectedYear={setSelectedYear}
-            getAvailableYears={getAvailableYears}
+            chatsByDate={chatsByDate || {}}
+            renderYearSelector={() => (
+              <YearSelector
+                selectedYear={selectedYear}
+                setSelectedYear={setSelectedYear}
+                getAvailableYears={getAvailableYears}
+              />
+            )}
           />
         )}
-      />
+      </div>
     </div>
   );
 };
