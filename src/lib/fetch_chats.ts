@@ -32,22 +32,19 @@ export const fetchChats = async ({
     chrome.runtime.sendMessage({ type: messages.fetchChatsStart });
 
     while (hasMore) {
-      const { data } = await axios.get<ChatResponse>(
-        "https://chatgpt.com/backend-api/conversations",
-        {
-          headers: headers.reduce(
-            (acc, header) => {
-              acc[header.name] = header.value;
-              return acc;
-            },
-            {} as Record<string, string>
-          ),
-          params: {
-            limit,
-            offset
-          }
+      const { data } = await axios.get<ChatResponse>(baseUrl, {
+        headers: headers.reduce(
+          (acc, header) => {
+            acc[header.name] = header.value;
+            return acc;
+          },
+          {} as Record<string, string>
+        ),
+        params: {
+          limit,
+          offset
         }
-      );
+      });
 
       allChats.push(
         ...data.items.map((item) => ({

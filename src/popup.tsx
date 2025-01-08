@@ -4,85 +4,8 @@ import { useEffect, useState } from "react";
 import { Storage } from "@plasmohq/storage";
 import { useStorage } from "@plasmohq/storage/hook";
 
-import { keys } from "~config/constants";
-
-const getColorIntensity = (count: number) => {
-  if (count === 0) return "#ebedf0";
-  if (count <= 2) return "#9be9a8";
-  if (count <= 5) return "#40c463";
-  if (count <= 10) return "#30a14e";
-  return "#216e39";
-};
-
-const ContributionSquare = ({ count = 0, date }) => {
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [tooltipPosition, setTooltipPosition] = useState({
-    vertical: "bottom",
-    horizontal: "center"
-  });
-
-  const handleMouseEnter = (e: React.MouseEvent) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const vertical = rect.top < 40 ? "top" : "bottom";
-    const horizontal =
-      rect.left < 70
-        ? "right"
-        : rect.right > window.innerWidth - 70
-          ? "left"
-          : "center";
-    setTooltipPosition({ vertical, horizontal });
-    setShowTooltip(true);
-  };
-
-  const getHorizontalTransform = () => {
-    switch (tooltipPosition.horizontal) {
-      case "left":
-        return "translateX(-90%)";
-      case "right":
-        return "translateX(-10%)";
-      default:
-        return "translateX(-50%)";
-    }
-  };
-
-  return (
-    <div
-      style={{
-        width: 10,
-        height: 10,
-        backgroundColor: getColorIntensity(count),
-        margin: 1,
-        borderRadius: 2,
-        position: "relative"
-      }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={() => setShowTooltip(false)}>
-      {showTooltip && (
-        <div
-          style={{
-            position: "absolute",
-            ...(tooltipPosition.vertical === "bottom"
-              ? { bottom: "100%", top: "auto" }
-              : { top: "100%", bottom: "auto" }),
-            left: "50%",
-            transform: getHorizontalTransform(),
-            backgroundColor: "#333",
-            color: "white",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            fontSize: "12px",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-            zIndex: 1000,
-            marginTop: tooltipPosition.vertical === "top" ? "4px" : "auto",
-            marginBottom: tooltipPosition.vertical === "bottom" ? "4px" : "auto"
-          }}>
-          {`${date}: ${count} chats`}
-        </div>
-      )}
-    </div>
-  );
-};
+import { ContributionSquare } from "~components/contribution-square";
+import { DAYS, keys, MONTHS } from "~config/constants";
 
 const IndexPopup = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -99,7 +22,7 @@ const IndexPopup = () => {
       ...new Set(
         Object.keys(chatsByDate).map((date) => new Date(date).getFullYear())
       )
-    ].sort((a, b) => b - a); // Sort descending
+    ].sort((a, b) => b - a);
   };
 
   const handleDownload = async () => {
@@ -157,10 +80,8 @@ const IndexPopup = () => {
     const messageListener = (message: any) => {
       switch (message.type) {
         case "FETCH_CHATS_START":
-          // Handle fetch start (e.g., show loading spinner)
           break;
         case "FETCH_CHATS_COMPLETE":
-          // Handle fetch completion (e.g., update UI with message.payload data)
           break;
       }
     };
@@ -170,7 +91,6 @@ const IndexPopup = () => {
   }, []);
 
   const renderContributionGraph = () => {
-    const today = new Date();
     const startDate = new Date(selectedYear, 0, 1);
     const days = Array.from({ length: 365 }, (_, i) => {
       const date = new Date(startDate);
@@ -182,11 +102,9 @@ const IndexPopup = () => {
       };
     });
 
-    // Calculate grid dimensions
-    const ROWS = 7; // 7 days per column
-    const COLS = Math.ceil(365 / ROWS); // ~53 columns
+    const ROWS = 7;
+    const COLS = Math.ceil(365 / ROWS);
 
-    // Reorganize days into columns
     const columns = Array.from({ length: COLS }, (_, colIndex) =>
       days.slice(colIndex * ROWS, (colIndex + 1) * ROWS)
     );
@@ -224,22 +142,59 @@ const IndexPopup = () => {
         </div>
 
         {renderYearSelector()}
+
         <div
-          style={{
-            display: "flex"
-          }}>
-          {columns.map((column, colIndex) => (
+          style={{ display: "flex", marginLeft: "30px", marginBottom: "4px" }}>
+          {MONTHS.map((month, i) => (
             <div
-              key={colIndex}
+              key={month}
               style={{
-                display: "flex",
-                flexDirection: "column"
+                color: "#666",
+                fontSize: "12px",
+                width: `${(650 - 30) / 12}px`,
+                textAlign: "left"
               }}>
-              {column.map(({ date, count }) => (
-                <ContributionSquare key={date} date={date} count={count} />
-              ))}
+              {month}
             </div>
           ))}
+        </div>
+
+        <div style={{ display: "flex" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginRight: "4px",
+              width: "30px"
+            }}>
+            {DAYS.map((day, i) => (
+              <div
+                key={i}
+                style={{
+                  color: "#666",
+                  fontSize: "12px",
+                  height: "12px",
+                  marginBottom: "1px",
+                  textAlign: "left"
+                }}>
+                {day}
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex" }}>
+            {columns.map((column, colIndex) => (
+              <div
+                key={colIndex}
+                style={{
+                  display: "flex",
+                  flexDirection: "column"
+                }}>
+                {column.map(({ date, count }) => (
+                  <ContributionSquare key={date} date={date} count={count} />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
