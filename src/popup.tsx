@@ -48,7 +48,7 @@ const IndexPopup = () => {
 
   return (
     <div style={{ padding: 16, paddingTop: 5 }}>
-      <div style={{ width: "650px" }}>
+      <div style={{ width: "675px" }}>
         {fetchingChats ? (
           <div
             style={{

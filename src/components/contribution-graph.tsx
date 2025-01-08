@@ -32,17 +32,18 @@ export const ContributionGraph = ({
   );
 
   return (
-    <div style={{ width: "650px" }} id="contribution-graph">
+    <div style={{ width: "675px" }} id="contribution-graph">
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center"
+          alignItems: "center",
+          marginBottom: "20px",
+          marginTop: "8px"
         }}>
-        <h2>ChatGPT Activity</h2>
+        <h2 style={{ margin: 0 }}>ChatGPT Activity</h2>
+        {renderYearSelector()}
       </div>
-
-      {renderYearSelector()}
 
       <div style={{ display: "flex", marginLeft: "30px", marginBottom: "4px" }}>
         {MONTHS.map((month) => (
@@ -51,7 +52,7 @@ export const ContributionGraph = ({
             style={{
               color: "#666",
               fontSize: "12px",
-              width: `${(650 - 30) / 12}px`,
+              width: `${(675 - 30) / 12}px`,
               textAlign: "left"
             }}>
             {month}
