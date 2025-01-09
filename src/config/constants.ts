@@ -9,7 +9,7 @@ export const messages = {
   fetchChatsComplete: "FETCH_CHATS_COMPLETE"
 };
 
-export const DAYS = ["Mon", "", "Wed", "", "Fri", "", ""];
+export const DAYS = ["Mon", "", "Wed", "", "Fri", "", "Sun"];
 export const MONTHS = [
   "Jan",
   "Feb",

@@ -9,6 +9,20 @@ export const ContributionSquare = ({ count = 0, date }) => {
     horizontal: "center"
   });
 
+  if (count === -1) {
+    return (
+      <div
+        style={{
+          width: 10,
+          height: 10,
+          backgroundColor: "transparent",
+          margin: 1,
+          borderRadius: 2
+        }}
+      />
+    );
+  }
+
   const handleMouseEnter = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const vertical = rect.top < 40 ? "top" : "bottom";
@@ -65,7 +79,9 @@ export const ContributionSquare = ({ count = 0, date }) => {
             marginTop: tooltipPosition.vertical === "top" ? "4px" : "auto",
             marginBottom: tooltipPosition.vertical === "bottom" ? "4px" : "auto"
           }}>
-          {`${date}: ${count} chats`}
+          {count === 0
+            ? `${date}: No chats`
+            : `${date}: ${count} chat${count === 1 ? "" : "s"}`}
         </div>
       )}
     </div>

@@ -14,6 +14,12 @@ export const ContributionGraph = ({
   renderYearSelector
 }: ContributionGraphProps) => {
   const startDate = new Date(selectedYear, 0, 1);
+  const startDayOfWeek = startDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
+
+  // Convert to Monday-based week system (Monday = 0, Sunday = 6)
+  const adjustedStartDay = startDayOfWeek === 0 ? 6 : startDayOfWeek - 1;
+
+  // Create a full year of days
   const days = Array.from({ length: 365 }, (_, i) => {
     const date = new Date(startDate);
     date.setDate(date.getDate() + i);
@@ -24,12 +30,19 @@ export const ContributionGraph = ({
     };
   });
 
+  // Create week-based columns
   const ROWS = 7;
-  const COLS = Math.ceil(365 / ROWS);
+  const COLS = 53; // Maximum number of weeks in a year + 1 for partial weeks
 
-  const columns = Array.from({ length: COLS }, (_, colIndex) =>
-    days.slice(colIndex * ROWS, (colIndex + 1) * ROWS)
-  );
+  const columns = Array.from({ length: COLS }, (_, weekIndex) => {
+    return Array.from({ length: ROWS }, (_, dayIndex) => {
+      const dayOffset = weekIndex * ROWS + dayIndex - adjustedStartDay;
+      if (dayOffset < 0 || dayOffset >= days.length) {
+        return { date: "", count: -1 };
+      }
+      return days[dayOffset];
+    });
+  });
 
   return (
     <div style={{ width: "675px" }} id="contribution-graph">
@@ -49,8 +62,8 @@ export const ContributionGraph = ({
           <div
             key={month}
             style={{
-              color: "#666",
-              fontSize: "12px",
+              color: "#fafafa",
+              fontSize: "10px",
               width: `${(675 - 30) / 12}px`,
               textAlign: "left"
             }}>
@@ -71,10 +84,10 @@ export const ContributionGraph = ({
             <div
               key={i}
               style={{
-                color: "#666",
-                fontSize: "12px",
-                height: "12px",
-                marginBottom: "1px",
+                color: "#fafafa",
+                fontSize: "10px",
+                height: "10px",
+                marginBottom: "2px",
                 textAlign: "left"
               }}>
               {day}
@@ -89,8 +102,12 @@ export const ContributionGraph = ({
                 display: "flex",
                 flexDirection: "column"
               }}>
-              {column.map(({ date, count }) => (
-                <ContributionSquare key={date} date={date} count={count} />
+              {column.map(({ date, count }, rowIndex) => (
+                <ContributionSquare
+                  key={`${colIndex}-${rowIndex}`}
+                  date={date}
+                  count={count}
+                />
               ))}
             </div>
           ))}
