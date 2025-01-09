@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 .loading-spinner {
   width: 24px;
   height: 24px;
@@ -11,4 +13,9 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.inter-font {
+  font-family: "Inter", sans-serif;
+  font-weight: 900;
 }

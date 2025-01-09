@@ -41,7 +41,9 @@ export const ContributionGraph = ({
           marginBottom: "20px",
           marginTop: "8px"
         }}>
-        <h2 style={{ margin: 0 }}>ChatGPT Activity</h2>
+        <h2 style={{ margin: 0 }} className="inter-font">
+          ChatGPT Activity
+        </h2>
         {renderYearSelector()}
       </div>
 
