@@ -1,3 +1,4 @@
+import type { PlasmoCSConfig, PlasmoGetInlineAnchor } from "plasmo";
 import { useEffect, useState } from "react";
 
 import { Storage } from "@plasmohq/storage";
@@ -7,11 +8,22 @@ import { ContributionGraph } from "~components/contribution-graph";
 import { YearSelector } from "~components/year-selector";
 import { keys, messages } from "~config/constants";
 
-import "./styles/popup.css";
+import "../styles/popup.css";
+
+export const config: PlasmoCSConfig = {
+  matches: ["https://chatgpt.com/*", "https://www.chatgpt.com/*"]
+};
+
+export const getInlineAnchor: PlasmoGetInlineAnchor = async () => ({
+  element: document.querySelector(".bg-token-sidebar-surface-primary.pt-0"),
+  insertPosition: "beforebegin"
+});
+
+export const getShadowHostId = () => "chatgpt-usage-chart-inline";
 
 const localStorage = new Storage({ area: "local" });
 
-const IndexPopup = () => {
+const ChatGPTActivityChart = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [isLoading, setIsLoading] = useState(false);
 
@@ -85,4 +97,4 @@ const IndexPopup = () => {
   );
 };
 
-export default IndexPopup;
+export default ChatGPTActivityChart;

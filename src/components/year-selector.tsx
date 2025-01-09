@@ -12,17 +12,16 @@ export const YearSelector = ({
   getAvailableYears
 }: YearSelectorProps) => {
   return (
-    <div style={{ display: "inline-block" }}>
+    <div style={{ display: "inline-block", width: "100%" }}>
       <select
         value={selectedYear}
         onChange={(e) => setSelectedYear(Number(e.target.value))}
         style={{
           padding: "4px 8px",
           fontSize: "14px",
-          border: "1px solid #ddd",
           borderRadius: "4px",
-          backgroundColor: "white",
-          cursor: "pointer"
+          cursor: "pointer",
+          width: "100%"
         }}>
         {getAvailableYears().map((year) => (
           <option key={year} value={year}>
