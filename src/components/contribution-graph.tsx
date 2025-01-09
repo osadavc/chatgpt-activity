@@ -15,6 +15,12 @@ export const ContributionGraph = ({
   renderYearSelector,
   hideMarkers = false
 }: ContributionGraphProps) => {
+  const FULL_WIDTH = 675;
+  const COMPACT_WIDTH = 220;
+  const width = hideMarkers ? COMPACT_WIDTH : FULL_WIDTH;
+  const squareSize = hideMarkers ? 3 : 10;
+  const squareMargin = hideMarkers ? 0.5 : 1;
+
   const startDate = new Date(selectedYear, 0, 1);
   const startDayOfWeek = startDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
 
@@ -47,14 +53,14 @@ export const ContributionGraph = ({
   });
 
   return (
-    <div style={{ width: "675px" }} id="contribution-graph">
+    <div style={{ width }} id="contribution-graph">
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "20px",
-          marginTop: "8px"
+          marginBottom: hideMarkers ? 8 : 20,
+          marginTop: hideMarkers ? 4 : 8
         }}>
         {renderYearSelector()}
       </div>
@@ -68,7 +74,7 @@ export const ContributionGraph = ({
               style={{
                 color: "#fafafa",
                 fontSize: "10px",
-                width: `${(675 - 30) / 12}px`,
+                width: `${(FULL_WIDTH - 30) / 12}px`,
                 textAlign: "left"
               }}>
               {month}
@@ -116,6 +122,8 @@ export const ContributionGraph = ({
                   date={date}
                   count={count}
                   hideTooltip={hideMarkers}
+                  size={squareSize}
+                  margin={squareMargin}
                 />
               ))}
             </div>

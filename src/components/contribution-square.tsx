@@ -6,12 +6,16 @@ interface ContributionSquareProps {
   count?: number;
   date: string;
   hideTooltip?: boolean;
+  size?: number;
+  margin?: number;
 }
 
 export const ContributionSquare = ({
   count = 0,
   date,
-  hideTooltip = false
+  hideTooltip = false,
+  size = 10,
+  margin = 1
 }: ContributionSquareProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({
@@ -23,11 +27,11 @@ export const ContributionSquare = ({
     return (
       <div
         style={{
-          width: 10,
-          height: 10,
+          width: size,
+          height: size,
           backgroundColor: "transparent",
-          margin: 1,
-          borderRadius: 2
+          margin,
+          borderRadius: Math.max(1, size / 5)
         }}
       />
     );
@@ -61,11 +65,11 @@ export const ContributionSquare = ({
   return (
     <div
       style={{
-        width: 10,
-        height: 10,
+        width: size,
+        height: size,
         backgroundColor: getColorIntensity(count),
-        margin: 1,
-        borderRadius: 2,
+        margin,
+        borderRadius: Math.max(1, size / 5),
         position: "relative"
       }}
       onMouseEnter={handleMouseEnter}

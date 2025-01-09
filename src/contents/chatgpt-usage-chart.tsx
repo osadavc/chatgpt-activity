@@ -67,8 +67,12 @@ const ChatGPTActivityChart = () => {
   }, []);
 
   return (
-    <div style={{ padding: 16, paddingTop: 5 }}>
-      <div style={{ width: "675px" }}>
+    <div
+      style={{
+        marginBottom: "10px",
+        marginLeft: "10px"
+      }}>
+      <div style={{ width: "200px" }}>
         {isLoading || !chatsByDate ? (
           <div
             style={{
@@ -88,6 +92,7 @@ const ChatGPTActivityChart = () => {
                 selectedYear={selectedYear}
                 setSelectedYear={setSelectedYear}
                 getAvailableYears={getAvailableYears}
+                small={true}
               />
             )}
             hideMarkers={true}
