@@ -6,12 +6,14 @@ interface ContributionGraphProps {
   selectedYear: number;
   chatsByDate: Record<string, number>;
   renderYearSelector: () => JSX.Element;
+  hideMarkers?: boolean;
 }
 
 export const ContributionGraph = ({
   selectedYear,
   chatsByDate,
-  renderYearSelector
+  renderYearSelector,
+  hideMarkers = false
 }: ContributionGraphProps) => {
   const startDate = new Date(selectedYear, 0, 1);
   const startDayOfWeek = startDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
@@ -57,44 +59,50 @@ export const ContributionGraph = ({
         {renderYearSelector()}
       </div>
 
-      <div style={{ display: "flex", marginLeft: "30px", marginBottom: "4px" }}>
-        {MONTHS.map((month) => (
-          <div
-            key={month}
-            style={{
-              color: "#fafafa",
-              fontSize: "10px",
-              width: `${(675 - 30) / 12}px`,
-              textAlign: "left"
-            }}>
-            {month}
-          </div>
-        ))}
-      </div>
-
-      <div style={{ display: "flex" }}>
+      {!hideMarkers && (
         <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            marginRight: "4px",
-            width: "30px"
-          }}>
-          {DAYS.map((day, i) => (
+          style={{ display: "flex", marginLeft: "30px", marginBottom: "4px" }}>
+          {MONTHS.map((month) => (
             <div
-              key={i}
+              key={month}
               style={{
                 color: "#fafafa",
                 fontSize: "10px",
-                height: "10px",
-                marginBottom: "2px",
+                width: `${(675 - 30) / 12}px`,
                 textAlign: "left"
               }}>
-              {day}
+              {month}
             </div>
           ))}
         </div>
-        <div style={{ display: "flex" }}>
+      )}
+
+      <div style={{ display: "flex" }}>
+        {!hideMarkers && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginRight: "4px",
+              width: "30px"
+            }}>
+            {DAYS.map((day, i) => (
+              <div
+                key={i}
+                style={{
+                  color: "#fafafa",
+                  fontSize: "10px",
+                  height: "10px",
+                  marginBottom: "2px",
+                  textAlign: "left"
+                }}>
+                {day}
+              </div>
+            ))}
+          </div>
+        )}
+        <div
+          style={{ display: "flex", marginLeft: hideMarkers ? 0 : undefined }}>
           {columns.map((column, colIndex) => (
             <div
               key={colIndex}
@@ -107,6 +115,7 @@ export const ContributionGraph = ({
                   key={`${colIndex}-${rowIndex}`}
                   date={date}
                   count={count}
+                  hideTooltip={hideMarkers}
                 />
               ))}
             </div>

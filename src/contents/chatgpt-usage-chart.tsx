@@ -90,6 +90,7 @@ const ChatGPTActivityChart = () => {
                 getAvailableYears={getAvailableYears}
               />
             )}
+            hideMarkers={true}
           />
         )}
       </div>

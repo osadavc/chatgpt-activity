@@ -2,7 +2,17 @@ import { useState } from "react";
 
 import { getColorIntensity } from "~utils/get-color-intensity";
 
-export const ContributionSquare = ({ count = 0, date }) => {
+interface ContributionSquareProps {
+  count?: number;
+  date: string;
+  hideTooltip?: boolean;
+}
+
+export const ContributionSquare = ({
+  count = 0,
+  date,
+  hideTooltip = false
+}: ContributionSquareProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({
     vertical: "bottom",
@@ -24,6 +34,7 @@ export const ContributionSquare = ({ count = 0, date }) => {
   }
 
   const handleMouseEnter = (e: React.MouseEvent) => {
+    if (hideTooltip) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const vertical = rect.top < 40 ? "top" : "bottom";
     const horizontal =
@@ -59,7 +70,7 @@ export const ContributionSquare = ({ count = 0, date }) => {
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setShowTooltip(false)}>
-      {showTooltip && (
+      {showTooltip && !hideTooltip && (
         <div
           style={{
             position: "absolute",
