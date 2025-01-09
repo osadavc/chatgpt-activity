@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-activity",
-  "displayName": "Chatgpt activity",
+  "displayName": "Chatgpt Activity",
   "version": "0.0.1",
   "description": "Extension to show chatgpt activity in a grid",
   "author": "Osada Vidath <osadavidath@gmail.com>",
@@ -28,7 +28,7 @@
   },
   "manifest": {
     "host_permissions": [
-      "https://*/*"
+      "https://chatgpt.com/*"
     ],
     "permissions": [
       "webRequest",

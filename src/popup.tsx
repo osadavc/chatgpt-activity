@@ -5,7 +5,7 @@ import { useStorage } from "@plasmohq/storage/hook";
 
 import { ContributionGraph } from "~components/contribution-graph";
 import { YearSelector } from "~components/year-selector";
-import { keys } from "~config/constants";
+import { keys, messages } from "~config/constants";
 
 import "./styles/popup.css";
 
@@ -13,13 +13,10 @@ const localStorage = new Storage({ area: "local" });
 
 const IndexPopup = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [chatsByDate] = useStorage<Record<string, number>>({
+  const [chatsByDate, setChatsByDate] = useStorage<Record<string, number>>({
     key: keys.chatsByDate,
-    instance: localStorage
-  });
-  const [fetchingChats] = useStorage({
-    key: keys.fetchingChats,
     instance: localStorage
   });
 
@@ -33,23 +30,34 @@ const IndexPopup = () => {
   };
 
   useEffect(() => {
-    const messageListener = (message: any) => {
+    const messageListener = (message) => {
       switch (message.type) {
-        case "FETCH_CHATS_START":
+        case messages.fetchChatsStart:
+          setIsLoading(true);
           break;
-        case "FETCH_CHATS_COMPLETE":
+        case messages.fetchChatsComplete:
+          console.log("Fetching chats complete");
+          setIsLoading(false);
+          if (!message.error) {
+            setChatsByDate(message.data);
+          }
+          break;
+        default:
           break;
       }
     };
 
     chrome.runtime.onMessage.addListener(messageListener);
-    return () => chrome.runtime.onMessage.removeListener(messageListener);
+
+    return () => {
+      chrome.runtime.onMessage.removeListener(messageListener);
+    };
   }, []);
 
   return (
     <div style={{ padding: 16, paddingTop: 5 }}>
       <div style={{ width: "675px" }}>
-        {fetchingChats ? (
+        {isLoading || !chatsByDate ? (
           <div
             style={{
               display: "flex",

@@ -100,7 +100,8 @@ export const fetchChats = async ({
     await storage.set(keys.fetchingChats, false);
 
     chrome.runtime.sendMessage({
-      type: messages.fetchChatsComplete
+      type: messages.fetchChatsComplete,
+      data: allDates
     });
   } catch (error) {
     console.error("Error fetching chats:", error);
