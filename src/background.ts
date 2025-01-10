@@ -17,7 +17,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
           details.url.includes("/backend-api/conversations") &&
           isFirstRequest
         ) {
-          console.log("Fetching chats");
           isFirstRequest = false;
           const chatsByDate = await storage.get(keys.chatsByDate);
           const lastFetchTime = await storage.get(keys.lastFetchTime);

@@ -5,6 +5,7 @@ import { Storage } from "@plasmohq/storage";
 import { useStorage } from "@plasmohq/storage/hook";
 
 import { ContributionGraph } from "~components/contribution-graph";
+import { ContributionModal } from "~components/contribution-modal";
 import { YearSelector } from "~components/year-selector";
 import { keys, messages } from "~config/constants";
 
@@ -26,6 +27,7 @@ const localStorage = new Storage({ area: "local" });
 const ChatGPTActivityChart = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [chatsByDate, setChatsByDate] = useStorage<Record<string, number>>({
     key: keys.chatsByDate,
@@ -66,13 +68,27 @@ const ChatGPTActivityChart = () => {
     };
   }, []);
 
+  const renderYearSelector = (small = false) => (
+    <YearSelector
+      selectedYear={selectedYear}
+      setSelectedYear={setSelectedYear}
+      getAvailableYears={getAvailableYears}
+      small={small}
+    />
+  );
+
   return (
     <div
       style={{
         marginBottom: "10px",
         marginLeft: "10px"
       }}>
-      <div style={{ width: "200px" }}>
+      <div
+        style={{
+          width: "200px",
+          cursor: "pointer"
+        }}
+        onClick={() => setIsModalOpen(true)}>
         {isLoading || !chatsByDate ? (
           <div
             style={{
@@ -87,18 +103,19 @@ const ChatGPTActivityChart = () => {
           <ContributionGraph
             selectedYear={selectedYear}
             chatsByDate={chatsByDate || {}}
-            renderYearSelector={() => (
-              <YearSelector
-                selectedYear={selectedYear}
-                setSelectedYear={setSelectedYear}
-                getAvailableYears={getAvailableYears}
-                small={true}
-              />
-            )}
+            renderYearSelector={() => null}
             hideMarkers={true}
           />
         )}
       </div>
+
+      <ContributionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        selectedYear={selectedYear}
+        chatsByDate={chatsByDate || {}}
+        renderYearSelector={() => renderYearSelector(false)}
+      />
     </div>
   );
 };
