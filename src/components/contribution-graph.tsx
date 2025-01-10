@@ -5,14 +5,12 @@ import { ContributionSquare } from "./contribution-square";
 interface ContributionGraphProps {
   selectedYear: number;
   chatsByDate: Record<string, number>;
-  renderYearSelector: () => JSX.Element;
   hideMarkers?: boolean;
 }
 
 export const ContributionGraph = ({
   selectedYear,
   chatsByDate,
-  renderYearSelector,
   hideMarkers = false
 }: ContributionGraphProps) => {
   const FULL_WIDTH = 675;
@@ -54,17 +52,6 @@ export const ContributionGraph = ({
 
   return (
     <div style={{ width }} id="contribution-graph">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: hideMarkers ? 8 : 20,
-          marginTop: hideMarkers ? 4 : 8
-        }}>
-        {renderYearSelector()}
-      </div>
-
       {!hideMarkers && (
         <div
           style={{ display: "flex", marginLeft: "30px", marginBottom: "4px" }}>

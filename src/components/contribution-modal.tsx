@@ -1,20 +1,26 @@
+import { useState } from "react";
+
+import { getColorIntensity } from "../utils/get-color-intensity";
 import { ContributionGraph } from "./contribution-graph";
 
 interface ContributionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedYear: number;
   chatsByDate: Record<string, number>;
-  renderYearSelector: () => JSX.Element;
+  availableYears: number[];
 }
 
 export const ContributionModal = ({
   isOpen,
   onClose,
-  selectedYear,
   chatsByDate,
-  renderYearSelector
+  availableYears
 }: ContributionModalProps) => {
+  const [hoveredYear, setHoveredYear] = useState<number | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number>(
+    new Date().getFullYear()
+  );
+
   if (!isOpen) return null;
 
   return (
@@ -46,14 +52,54 @@ export const ContributionModal = ({
           zIndex: 9999,
           maxWidth: "90vw",
           maxHeight: "90vh",
-          overflow: "auto"
+          overflow: "auto",
+          display: "flex",
+          gap: "32px",
+          alignItems: "flex-start"
         }}>
         <ContributionGraph
           selectedYear={selectedYear}
           chatsByDate={chatsByDate}
-          renderYearSelector={renderYearSelector}
           hideMarkers={false}
         />
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "4px",
+            marginTop: "10px"
+          }}>
+          {availableYears.map((year) => (
+            <button
+              key={year}
+              onClick={() => setSelectedYear(year)}
+              onMouseEnter={() => setHoveredYear(year)}
+              onMouseLeave={() => setHoveredYear(null)}
+              style={{
+                background:
+                  year === selectedYear
+                    ? getColorIntensity(4)
+                    : hoveredYear === year
+                      ? "rgba(255, 255, 255, 0.05)"
+                      : "none",
+                border: "none",
+                color: year === selectedYear ? "#fff" : getColorIntensity(0),
+                fontSize: "14px",
+                cursor: "pointer",
+                padding: "5px 14px",
+                borderRadius: "4px",
+                transition: "all 0.2s ease",
+                textAlign: "left",
+                fontWeight: year === selectedYear ? 500 : 400,
+                opacity:
+                  year === selectedYear || hoveredYear === year ? 1 : 0.8,
+                minWidth: "70px"
+              }}>
+              {year}
+            </button>
+          ))}
+        </div>
       </div>
     </>
   );

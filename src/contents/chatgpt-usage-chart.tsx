@@ -6,7 +6,6 @@ import { useStorage } from "@plasmohq/storage/hook";
 
 import { ContributionGraph } from "~components/contribution-graph";
 import { ContributionModal } from "~components/contribution-modal";
-import { YearSelector } from "~components/year-selector";
 import { keys, messages } from "~config/constants";
 import type { ChatItem } from "~types/chatgpt_api_response";
 import { aggregateChatDates } from "~utils/aggregate-chat-dates";
@@ -27,7 +26,6 @@ export const getShadowHostId = () => "chatgpt-usage-chart-inline";
 const localStorage = new Storage({ area: "local" });
 
 const ChatGPTActivityChart = () => {
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -71,15 +69,6 @@ const ChatGPTActivityChart = () => {
     };
   }, []);
 
-  const renderYearSelector = (small = false) => (
-    <YearSelector
-      selectedYear={selectedYear}
-      setSelectedYear={setSelectedYear}
-      getAvailableYears={getAvailableYears}
-      small={small}
-    />
-  );
-
   return (
     <div
       style={{
@@ -92,7 +81,7 @@ const ChatGPTActivityChart = () => {
           cursor: "pointer"
         }}
         onClick={() => setIsModalOpen(true)}>
-        {isLoading || !chatsByDate ? (
+        {isLoading || rawChatData?.length === 0 ? (
           <div
             style={{
               display: "flex",
@@ -104,9 +93,8 @@ const ChatGPTActivityChart = () => {
           </div>
         ) : (
           <ContributionGraph
-            selectedYear={selectedYear}
+            selectedYear={new Date().getFullYear()}
             chatsByDate={chatsByDate}
-            renderYearSelector={() => null}
             hideMarkers={true}
           />
         )}
@@ -115,9 +103,8 @@ const ChatGPTActivityChart = () => {
       <ContributionModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        selectedYear={selectedYear}
         chatsByDate={chatsByDate}
-        renderYearSelector={() => renderYearSelector(false)}
+        availableYears={getAvailableYears()}
       />
     </div>
   );
