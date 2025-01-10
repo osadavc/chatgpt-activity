@@ -18,11 +18,11 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
           isFirstRequest
         ) {
           isFirstRequest = false;
-          const chatsByDate = await storage.get(keys.chatsByDate);
+          const rawChatData = await storage.get(keys.rawChatData);
           const lastFetchTime = await storage.get(keys.lastFetchTime);
 
           const shouldFetchChats =
-            !chatsByDate ||
+            !rawChatData ||
             (lastFetchTime &&
               new Date(lastFetchTime).getTime() + 1000 * 60 * 60 * 24 * 30 <
                 new Date().getTime());

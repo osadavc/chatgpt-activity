@@ -1,7 +1,8 @@
 export const keys = {
   chatsByDate: "chats_by_date",
   lastFetchTime: "last_fetch_time",
-  fetchingChats: "fetching_chats"
+  fetchingChats: "fetching_chats",
+  rawChatData: "raw_chat_data"
 };
 
 export const messages = {

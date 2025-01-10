@@ -8,6 +8,8 @@ import { ContributionGraph } from "~components/contribution-graph";
 import { ContributionModal } from "~components/contribution-modal";
 import { YearSelector } from "~components/year-selector";
 import { keys, messages } from "~config/constants";
+import type { ChatItem } from "~types/chatgpt_api_response";
+import { aggregateChatDates } from "~utils/aggregate-chat-dates";
 
 import "../styles/popup.css";
 
@@ -29,10 +31,16 @@ const ChatGPTActivityChart = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [chatsByDate, setChatsByDate] = useStorage<Record<string, number>>({
-    key: keys.chatsByDate,
+  const [rawChatData] = useStorage<
+    Pick<ChatItem, "create_time" | "update_time">[]
+  >({
+    key: keys.rawChatData,
     instance: localStorage
   });
+
+  console.log(rawChatData);
+
+  const chatsByDate = rawChatData ? aggregateChatDates(rawChatData) : {};
 
   const getAvailableYears = () => {
     if (!chatsByDate) return [new Date().getFullYear()];
@@ -52,9 +60,6 @@ const ChatGPTActivityChart = () => {
         case messages.fetchChatsComplete:
           console.log("Fetching chats complete");
           setIsLoading(false);
-          if (!message.error) {
-            setChatsByDate(message.data);
-          }
           break;
         default:
           break;
@@ -102,7 +107,7 @@ const ChatGPTActivityChart = () => {
         ) : (
           <ContributionGraph
             selectedYear={selectedYear}
-            chatsByDate={chatsByDate || {}}
+            chatsByDate={chatsByDate}
             renderYearSelector={() => null}
             hideMarkers={true}
           />
@@ -113,7 +118,7 @@ const ChatGPTActivityChart = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         selectedYear={selectedYear}
-        chatsByDate={chatsByDate || {}}
+        chatsByDate={chatsByDate}
         renderYearSelector={() => renderYearSelector(false)}
       />
     </div>
