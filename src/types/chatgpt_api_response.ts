@@ -24,3 +24,8 @@ export interface ChatResponse {
   offset: number;
   has_missing_conversations: boolean;
 }
+
+export type SavedRawData = Pick<
+  ChatItem,
+  "create_time" | "update_time" | "id"
+>[];

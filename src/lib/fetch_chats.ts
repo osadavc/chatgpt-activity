@@ -3,7 +3,11 @@ import axios from "axios";
 import { Storage } from "@plasmohq/storage";
 
 import { keys, messages } from "~config/constants";
-import type { ChatItem, ChatResponse } from "~types/chatgpt_api_response";
+import type {
+  ChatItem,
+  ChatResponse,
+  SavedRawData
+} from "~types/chatgpt_api_response";
 import { aggregateChatDates } from "~utils/aggregate-chat-dates";
 import { sleep } from "~utils/sleep";
 
@@ -27,7 +31,7 @@ export const fetchChats = async ({
   headers: ChromeHeaders;
 }) => {
   try {
-    const allChats: Pick<ChatItem, "create_time" | "update_time">[] = [];
+    const allChats: Pick<ChatItem, "create_time" | "update_time" | "id">[] = [];
 
     let offset = 0;
     const limit = 100;
@@ -101,5 +105,46 @@ export const fetchChats = async ({
       error: true
     });
     return;
+  }
+};
+
+export const fetchAndSaveLatestChat = async ({
+  baseUrl,
+  headers
+}: {
+  baseUrl: string;
+  headers: ChromeHeaders;
+}) => {
+  const { data } = await axios.get<ChatResponse>(baseUrl, {
+    headers: headers.reduce(
+      (acc, header) => {
+        acc[header.name] = header.value;
+        return acc;
+      },
+      {} as Record<string, string>
+    ),
+    params: {
+      limit: 1,
+      offset: 0
+    }
+  });
+
+  if (data.items.length > 0) {
+    const existingChats =
+      (await storage.get<SavedRawData>(keys.rawChatData)) || [];
+    const currentTime = new Date().toISOString();
+
+    const newChat = {
+      id: data.items[0].id,
+      create_time: currentTime,
+      update_time: currentTime
+    };
+
+    await storage.set(keys.rawChatData, [...existingChats, newChat]);
+    const aggregatedDates = aggregateChatDates([...existingChats, newChat]);
+    chrome.runtime.sendMessage({
+      type: messages.fetchChatsComplete,
+      data: aggregatedDates
+    });
   }
 };

@@ -32,13 +32,11 @@ const ChatGPTActivityChart = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [rawChatData] = useStorage<
-    Pick<ChatItem, "create_time" | "update_time">[]
+    Pick<ChatItem, "create_time" | "update_time" | "id">[]
   >({
     key: keys.rawChatData,
     instance: localStorage
   });
-
-  console.log(rawChatData);
 
   const chatsByDate = rawChatData ? aggregateChatDates(rawChatData) : {};
 
