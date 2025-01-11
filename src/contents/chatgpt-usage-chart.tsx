@@ -10,8 +10,6 @@ import { keys, messages } from "~config/constants";
 import type { ChatItem } from "~types/chatgpt_api_response";
 import { aggregateChatDates } from "~utils/aggregate-chat-dates";
 
-import "../styles/popup.css";
-
 export const config: PlasmoCSConfig = {
   matches: ["https://chatgpt.com/*", "https://www.chatgpt.com/*"]
 };
@@ -80,16 +78,21 @@ const ChatGPTActivityChart = () => {
           width: "200px",
           cursor: "pointer"
         }}
-        onClick={() => setIsModalOpen(true)}>
-        {isLoading || rawChatData?.length === 0 ? (
+        title={`Your ${new Date().getFullYear()} ChatGPT Usage`}
+        onClick={() => {
+          if (isLoading || (rawChatData ?? [])?.length === 0) return;
+          setIsModalOpen(true);
+        }}>
+        {isLoading || (rawChatData ?? [])?.length === 0 ? (
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              minHeight: 200
+              color: "#666666",
+              fontSize: "12px"
             }}>
-            <div className="loading-spinner" />
+            Loading chats...
           </div>
         ) : (
           <ContributionGraph
