@@ -1,24 +1,36 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# ChatGPT Activity
 
-## Getting Started
+A Chrome extension built with [Plasmo Framework](https://docs.plasmo.com/) that adds a GitHub-style contribution graph to your ChatGPT sidebar, showing your ChatGPT usage patterns over time. Track your AI interactions just like you track your code contributions!
 
-First, run the development server:
+![ChatGPT Activity Screenshot](./images/screenshot.png)
+
+## Features
+
+- 📊 GitHub-style contribution heat map in your ChatGPT sidebar
+- 📅 Visual representation of your ChatGPT usage across days and months
+- 🎨 Color-coded intensity based on daily usage
+- 📱 Responsive design that integrates seamlessly with ChatGPT's interface
+- 🔍 Detailed view on hover showing exact usage counts
+- 📈 Track your AI interaction patterns over time
+
+## Installation
+
+1. Clone this repository:
 
 ```bash
-pnpm dev
-# or
-npm run dev
+git clone https://github.com/yourusername/chatgpt-activity.git
+cd chatgpt-activity
 ```
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
+2. Install dependencies:
 
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
+```bash
+pnpm install
+# or
+npm install
+```
 
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
-
-## Making production build
-
-Run the following:
+3. Build the extension:
 
 ```bash
 pnpm build
@@ -26,8 +38,43 @@ pnpm build
 npm run build
 ```
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
+4. Load the extension in Chrome:
+   - Open Chrome and navigate to `chrome://extensions/`
+   - Enable "Developer mode" in the top right
+   - Click "Load unpacked" and select the `build/chrome-mv3-dev` directory
 
-## Submit to the webstores
+## Development
 
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+To start the development server:
+
+```bash
+pnpm dev
+# or
+npm run dev
+```
+
+The extension will automatically reload when you make changes to the code.
+
+## How It Works
+
+The extension tracks your ChatGPT usage by monitoring your interactions with the platform. It stores this data locally and displays it in a contribution graph similar to GitHub's contribution chart. The data is visualized using a heat map where darker colors indicate more frequent usage.
+
+## Privacy
+
+All usage data is stored locally in your browser. No data is sent to external servers or shared with third parties.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+[MIT License](LICENSE)
+
+## Acknowledgments
+
+Built with:
+
+- [Plasmo Framework](https://docs.plasmo.com/)
+- TypeScript
+- React
