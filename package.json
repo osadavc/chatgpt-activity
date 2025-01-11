@@ -1,8 +1,8 @@
 {
   "name": "chatgpt-activity",
-  "displayName": "Chatgpt Activity",
+  "displayName": "ChatGPT Activity",
   "version": "0.0.1",
-  "description": "Extension to show chatgpt activity in a GitHub styled heatmap contribution graph",
+  "description": "Extension to show ChatGPT activity in a GitHub styled heatmap contribution graph",
   "author": "Osada Vidath <osadavidath@gmail.com>",
   "scripts": {
     "dev": "plasmo dev",
